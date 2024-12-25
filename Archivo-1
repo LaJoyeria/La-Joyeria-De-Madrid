@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda de Joyería</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>Tu Joyería</h1>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#productos">Productos</a></li>
+                <li><a href="#nosotros">Nosotros</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="inicio" class="hero">
+        <h2>Descubre nuestras exclusivas colecciones</h2>
+        <p>Joyas únicas para cada ocasión especial</p>
+        <a href="#productos" class="cta-button">Ver Colección</a>
+    </section>
+
+    <section id="productos">
+        <h2>Nuestros Productos</h2>
+        <div class="productos-container">
+            <!-- Espacio para los productos -->
+        </div>
+    </section>
+
+    <section id="pago">
+        <h2>Realizar Pago</h2>
+        <form id="payment-form">
+            <div id="card-element">
+                <!-- Stripe Element se inserta aquí -->
+            </div>
+            <button id="submit">Pagar</button>
+            <p id="payment-message" class="hidden"></p>
+        </form>
+    </section>
+
+    <section id="nosotros">
+        <h2>Sobre Nosotros</h2>
+        <p>Somos una joyería con años de experiencia en la creación de piezas únicas y de alta calidad. Nuestro compromiso es ofrecer productos que reflejen elegancia y estilo.</p>
+    </section>
+
+    <section id="contacto">
+        <h2>Contáctanos</h2>
+        <form action="#" method="post">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" required>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+
+            <label for="mensaje">Mensaje:</label>
+            <textarea id="mensaje" name="mensaje" rows="4" required></textarea>
+
+            <button type="submit">Enviar</button>
+        </form>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 Tu Joyería. Todos los derechos reservados.</p>
+    </footer>
+
+    <script>
+        const stripe = Stripe('your-publishable-key-here'); // Reemplaza con tu clave pública de Stripe
+
+        const elements = stripe.elements();
+        const cardElement = elements.create('card');
+
+        cardElement.mount('#card-element');
+
+        const form = document.getElementById('payment-form');
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const {error, paymentMethod} = await stripe.createPaymentMethod({
+                type: 'card',
+                card: cardElement,
+            });
+
+            if (error) {
+                document.getElementById('payment-message').textContent = error.message;
+                document.getElementById('payment-message').classList.remove('hidden');
+            } else {
+                document.getElementById('payment-message').textContent = 'Pago realizado con éxito';
+                document.getElementById('payment-message').classList.remove('hidden');
+                // Aquí puedes enviar el paymentMethod.id a tu servidor
+            }
+        });
+    </script>
+</body>
+</html>
